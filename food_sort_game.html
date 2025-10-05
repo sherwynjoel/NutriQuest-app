@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriQuest - Food Sort Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+        h1 {
+            color: #2E7D32;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .drop-zone {
+            min-height: 400px;
+            border: 3px dashed #ccc;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .drop-zone.healthy {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        .drop-zone.unhealthy {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+        .drop-zone.drag-over {
+            border-color: #2196F3;
+            background: #E3F2FD;
+            transform: scale(1.02);
+        }
+        .zone-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .healthy-zone .zone-title {
+            color: #2E7D32;
+        }
+        .unhealthy-zone .zone-title {
+            color: #c62828;
+        }
+        .food-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        .food-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: grab;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .food-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .food-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        .food-emoji {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+        .food-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9em;
+        }
+        .score-board {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin: 10px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        .btn-secondary {
+            background: #757575;
+        }
+        .btn-secondary:hover {
+            background: #666;
+        }
+        .result {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .result.correct {
+            background: #E8F5E8;
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+        }
+        .result.incorrect {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+        .back-btn {
+            background: #757575;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #666;
+        }
+        .instructions {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #1976D2;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="history.back()">← Back to Games</button>
+        
+        <div class="header">
+            <div class="logo">🥗</div>
+            <h1>Food Sort Game</h1>
+            <p class="subtitle">Drag and drop foods into healthy and unhealthy categories!</p>
+        </div>
+
+        <div class="instructions">
+            <h3>🎯 How to Play:</h3>
+            <p>• Drag each food item to the correct category (Healthy or Unhealthy)</p>
+            <p>• Get points for correct answers</p>
+            <p>• Learn about nutrition while having fun!</p>
+        </div>
+
+        <div class="score-board">
+            <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+            <div id="streak">Streak: 0</div>
+        </div>
+
+        <div class="game-area">
+            <div class="drop-zone healthy-zone" id="healthy-zone">
+                <div class="zone-title">✅ Healthy Foods</div>
+                <div id="healthy-items"></div>
+            </div>
+            
+            <div class="drop-zone unhealthy-zone" id="unhealthy-zone">
+                <div class="zone-title">❌ Unhealthy Foods</div>
+                <div id="unhealthy-items"></div>
+            </div>
+        </div>
+
+        <div class="food-items" id="food-items">
+            <!-- Food items will be generated by JavaScript -->
+        </div>
+
+        <div id="result" class="result" style="display: none;"></div>
+
+        <div class="controls">
+            <button class="btn" onclick="checkAnswers()" id="check-btn">Check Answers</button>
+            <button class="btn btn-secondary" onclick="resetGame()" id="reset-btn">Reset Game</button>
+            <button class="btn btn-secondary" onclick="nextRound()" id="next-btn" style="display: none;">Next Round</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let totalItems = 0;
+        let currentStreak = 0;
+        let gameRound = 1;
+        let draggedItem = null;
+
+        const foodData = [
+            // Round 1
+            [
+                { name: "Apple", emoji: "🍎", category: "healthy" },
+                { name: "Pizza", emoji: "🍕", category: "unhealthy" },
+                { name: "Broccoli", emoji: "🥦", category: "healthy" },
+                { name: "Candy", emoji: "🍭", category: "unhealthy" },
+                { name: "Carrot", emoji: "🥕", category: "healthy" },
+                { name: "Soda", emoji: "🥤", category: "unhealthy" }
+            ],
+            // Round 2
+            [
+                { name: "Banana", emoji: "🍌", category: "healthy" },
+                { name: "Chips", emoji: "🍟", category: "unhealthy" },
+                { name: "Spinach", emoji: "🥬", category: "healthy" },
+                { name: "Ice Cream", emoji: "🍦", category: "unhealthy" },
+                { name: "Orange", emoji: "🍊", category: "healthy" },
+                { name: "Donut", emoji: "🍩", category: "unhealthy" }
+            ],
+            // Round 3
+            [
+                { name: "Salmon", emoji: "🐟", category: "healthy" },
+                { name: "Burger", emoji: "🍔", category: "unhealthy" },
+                { name: "Avocado", emoji: "🥑", category: "healthy" },
+                { name: "Chocolate", emoji: "🍫", category: "unhealthy" },
+                { name: "Quinoa", emoji: "🌾", category: "healthy" },
+                { name: "Fries", emoji: "🍟", category: "unhealthy" }
+            ]
+        ];
+
+        function initGame() {
+            const currentRound = foodData[gameRound - 1];
+            totalItems = currentRound.length;
+            
+            // Clear previous items
+            document.getElementById('food-items').innerHTML = '';
+            document.getElementById('healthy-items').innerHTML = '';
+            document.getElementById('unhealthy-items').innerHTML = '';
+            
+            // Create food items
+            currentRound.forEach((food, index) => {
+                const foodItem = document.createElement('div');
+                foodItem.className = 'food-item';
+                foodItem.draggable = true;
+                foodItem.dataset.foodIndex = index;
+                foodItem.dataset.category = food.category;
+                foodItem.innerHTML = `
+                    <div class="food-emoji">${food.emoji}</div>
+                    <div class="food-name">${food.name}</div>
+                `;
+                
+                // Add drag event listeners
+                foodItem.addEventListener('dragstart', handleDragStart);
+                foodItem.addEventListener('dragend', handleDragEnd);
+                
+                document.getElementById('food-items').appendChild(foodItem);
+            });
+            
+            // Add drop event listeners to zones
+            document.getElementById('healthy-zone').addEventListener('dragover', handleDragOver);
+            document.getElementById('healthy-zone').addEventListener('drop', handleDrop);
+            document.getElementById('unhealthy-zone').addEventListener('dragover', handleDragOver);
+            document.getElementById('unhealthy-zone').addEventListener('drop', handleDrop);
+            
+            updateScore();
+        }
+
+        function handleDragStart(e) {
+            draggedItem = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            if (draggedItem && draggedItem.parentNode.id === 'food-items') {
+                e.currentTarget.appendChild(draggedItem);
+                draggedItem = null;
+            }
+        }
+
+        function checkAnswers() {
+            let correctAnswers = 0;
+            const healthyZone = document.getElementById('healthy-zone');
+            const unhealthyZone = document.getElementById('unhealthy-zone');
+            
+            // Check healthy zone
+            const healthyItems = healthyZone.querySelectorAll('.food-item');
+            healthyItems.forEach(item => {
+                if (item.dataset.category === 'healthy') {
+                    correctAnswers++;
+                    item.style.borderColor = '#4CAF50';
+                    item.style.backgroundColor = '#E8F5E8';
+                } else {
+                    item.style.borderColor = '#f44336';
+                    item.style.backgroundColor = '#ffcdd2';
+                }
+            });
+            
+            // Check unhealthy zone
+            const unhealthyItems = unhealthyZone.querySelectorAll('.food-item');
+            unhealthyItems.forEach(item => {
+                if (item.dataset.category === 'unhealthy') {
+                    correctAnswers++;
+                    item.style.borderColor = '#4CAF50';
+                    item.style.backgroundColor = '#E8F5E8';
+                } else {
+                    item.style.borderColor = '#f44336';
+                    item.style.backgroundColor = '#ffcdd2';
+                }
+            });
+            
+            // Update score
+            score += correctAnswers;
+            if (correctAnswers === totalItems) {
+                currentStreak++;
+            } else {
+                currentStreak = 0;
+            }
+            
+            updateScore();
+            showResult(correctAnswers, totalItems);
+            
+            // Disable dragging
+            document.querySelectorAll('.food-item').forEach(item => {
+                item.draggable = false;
+            });
+            
+            // Show next button if not last round
+            if (gameRound < foodData.length) {
+                document.getElementById('next-btn').style.display = 'inline-block';
+            } else {
+                showFinalScore();
+            }
+            
+            document.getElementById('check-btn').style.display = 'none';
+        }
+
+        function showResult(correct, total) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            if (correct === total) {
+                resultDiv.className = 'result correct';
+                resultDiv.innerHTML = `
+                    <h3>🎉 Perfect!</h3>
+                    <p>You got all ${total} items correct!</p>
+                    <p>Great job learning about healthy foods!</p>
+                `;
+            } else {
+                resultDiv.className = 'result incorrect';
+                resultDiv.innerHTML = `
+                    <h3>📚 Keep Learning!</h3>
+                    <p>You got ${correct} out of ${total} correct.</p>
+                    <p>Try again to improve your nutrition knowledge!</p>
+                `;
+            }
+        }
+
+        function showFinalScore() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result correct';
+            resultDiv.innerHTML = `
+                <h3>🏆 Game Complete!</h3>
+                <p>Final Score: ${score} points</p>
+                <p>You've learned about healthy and unhealthy foods!</p>
+                <p>Keep making healthy choices! 🥗</p>
+            `;
+        }
+
+        function resetGame() {
+            score = 0;
+            currentStreak = 0;
+            gameRound = 1;
+            initGame();
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function nextRound() {
+            gameRound++;
+            initGame();
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalItems;
+            document.getElementById('streak').textContent = `Streak: ${currentStreak}`;
+        }
+
+        // Initialize game when page loads
+        initGame();
+    </script>
+</body>
+</html>

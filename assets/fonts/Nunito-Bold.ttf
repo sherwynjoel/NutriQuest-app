@@ -1,0 +1,13 @@
+# This is a placeholder for Nunito-Bold.ttf
+# Download the actual font file from Google Fonts:
+# https://fonts.google.com/specimen/Nunito
+# 
+# To get the actual font file:
+# 1. Go to https://fonts.google.com/specimen/Nunito
+# 2. Click "Download family" 
+# 3. Extract the zip file
+# 4. Copy Nunito-Bold.ttf to this location
+# 5. Copy Nunito-Regular.ttf to assets/fonts/Nunito-Regular.ttf
+#
+# The font files are large binary files that cannot be created as text
+# You need to download them from Google Fonts

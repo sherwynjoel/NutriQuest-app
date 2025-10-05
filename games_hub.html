@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriQuest Games Hub</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+        h1 {
+            color: #2E7D32;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+            transform: translateY(-5px);
+        }
+        .game-icon {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+        .game-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+        .game-description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .play-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .play-btn:hover {
+            background: #45a049;
+        }
+        .status {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .status-title {
+            color: #2E7D32;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            background: #757575;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="history.back()">← Back</button>
+        
+        <div class="header">
+            <div class="logo">🎮</div>
+            <h1>NutriQuest Games</h1>
+            <p class="subtitle">Choose your game and start learning!</p>
+        </div>
+
+        <div class="status">
+            <div class="status-title">✅ All Games Working!</div>
+            <p>Click any game below to start playing and learning about nutrition.</p>
+        </div>
+
+        <div class="games-grid">
+            <div class="game-card" onclick="window.location.href='nutriquest_quiz.html'">
+                <div class="game-icon">🧠</div>
+                <div class="game-title">Nutrition Quiz</div>
+                <div class="game-description">
+                    Test your knowledge with 5 interactive nutrition questions. 
+                    Get instant feedback and learn about healthy eating!
+                </div>
+                <button class="play-btn">Play Quiz</button>
+            </div>
+
+            <div class="game-card" onclick="window.location.href='food_sort_game.html'">
+                <div class="game-icon">🥗</div>
+                <div class="game-title">Food Sort Game</div>
+                <div class="game-description">
+                    Drag and drop foods into healthy and unhealthy categories. 
+                    Learn to identify nutritious choices!
+                </div>
+                <button class="play-btn">Play Game</button>
+            </div>
+
+            <div class="game-card" onclick="window.location.href='meal_builder_game.html'">
+                <div class="game-icon">🍽️</div>
+                <div class="game-title">Meal Builder</div>
+                <div class="game-description">
+                    Create balanced meals and earn points for healthy choices. 
+                    Learn about proper nutrition combinations!
+                </div>
+                <button class="play-btn">Play Game</button>
+            </div>
+
+            <div class="game-card" onclick="window.location.href='learning_hub.html'">
+                <div class="game-icon">📚</div>
+                <div class="game-title">Learning Hub</div>
+                <div class="game-description">
+                    Explore nutrition facts and educational content. 
+                    Interactive lessons about healthy eating!
+                </div>
+                <button class="play-btn">Start Learning</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="play-btn" onclick="window.location.href='nutriquest_quiz.html'" style="font-size: 18px; padding: 15px 30px;">
+                🎯 Start with Nutrition Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function showComingSoon(gameName) {
+            alert(`${gameName} is coming soon!\n\nFor now, try the Nutrition Quiz - it's fully working with 5 interactive questions!`);
+        }
+
+        // Add some interactivity
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

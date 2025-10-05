@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriQuest Quiz - Working Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+        h1 {
+            color: #2E7D32;
+            margin: 0;
+        }
+        .quiz-container {
+            margin: 20px 0;
+        }
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #4CAF50;
+        }
+        .question h3 {
+            color: #2E7D32;
+            margin: 0 0 15px 0;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #4CAF50;
+            background: #f8f9fa;
+        }
+        .option.selected {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        .option.correct {
+            border-color: #4CAF50;
+            background: #C8E6C9;
+        }
+        .option.incorrect {
+            border-color: #f44336;
+            background: #ffcdd2;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin: 20px 0;
+        }
+        .result {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .result.correct {
+            background: #E8F5E8;
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+        }
+        .result.incorrect {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🧠</div>
+            <h1>NutriQuest Quiz</h1>
+            <p>Test your nutrition knowledge!</p>
+        </div>
+
+        <div class="quiz-container">
+            <div class="score">Score: <span id="score">0</span>/<span id="total">0</span></div>
+            
+            <div id="question-container">
+                <div class="question">
+                    <h3>Question 1: Which fruit is highest in vitamin C?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'orange')">
+                            A) Orange
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'banana')">
+                            B) Banana
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'apple')">
+                            C) Apple
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'grape')">
+                            D) Grape
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result" class="result" style="display: none;"></div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="checkAnswer()" id="check-btn">Check Answer</button>
+                <button class="btn" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
+                <button class="btn" onclick="restartQuiz()" id="restart-btn" style="display: none;">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        
+        const questions = [
+            {
+                question: "Which fruit is highest in vitamin C?",
+                options: ["Orange", "Banana", "Apple", "Grape"],
+                correct: 0,
+                explanation: "Oranges are rich in vitamin C, containing about 70mg per medium orange."
+            },
+            {
+                question: "What is the main benefit of eating leafy green vegetables?",
+                options: ["High in protein", "Rich in iron and folate", "High in sugar", "Low in calories"],
+                correct: 1,
+                explanation: "Leafy greens like spinach and kale are excellent sources of iron and folate."
+            },
+            {
+                question: "Which food group should make up the largest portion of your plate?",
+                options: ["Protein", "Grains", "Vegetables", "Dairy"],
+                correct: 2,
+                explanation: "Vegetables should fill half your plate according to MyPlate guidelines."
+            },
+            {
+                question: "What is the recommended daily water intake for adults?",
+                options: ["4-6 glasses", "6-8 glasses", "8-10 glasses", "10-12 glasses"],
+                correct: 2,
+                explanation: "Adults should drink 8-10 glasses of water daily for proper hydration."
+            },
+            {
+                question: "Which nutrient is essential for strong bones?",
+                options: ["Vitamin C", "Calcium", "Iron", "Protein"],
+                correct: 1,
+                explanation: "Calcium is crucial for bone health and development."
+            }
+        ];
+
+        function selectOption(element, answer) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            selectedAnswer = answer;
+        }
+
+        function checkAnswer() {
+            if (selectedAnswer === null) {
+                alert('Please select an answer!');
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            const selectedIndex = question.options.indexOf(selectedAnswer);
+            const isCorrect = selectedIndex === question.correct;
+
+            // Show result
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            if (isCorrect) {
+                score++;
+                resultDiv.className = 'result correct';
+                resultDiv.innerHTML = `
+                    <h3>✅ Correct!</h3>
+                    <p>${question.explanation}</p>
+                `;
+            } else {
+                resultDiv.className = 'result incorrect';
+                resultDiv.innerHTML = `
+                    <h3>❌ Incorrect!</h3>
+                    <p>The correct answer is: ${question.options[question.correct]}</p>
+                    <p>${question.explanation}</p>
+                `;
+            }
+
+            // Update score
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = currentQuestion + 1;
+
+            // Show next button
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+
+            // Disable options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent.includes(question.options[question.correct])) {
+                    opt.classList.add('correct');
+                } else if (opt.classList.contains('selected') && !opt.textContent.includes(question.options[question.correct])) {
+                    opt.classList.add('incorrect');
+                }
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            selectedAnswer = null;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('question-container');
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>Question ${currentQuestion + 1}: ${question.question}</h3>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(this, '${option}')">
+                                ${String.fromCharCode(65 + index)}) ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Reset buttons
+            document.getElementById('check-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function showFinalScore() {
+            const container = document.getElementById('question-container');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>🎉 Quiz Complete!</h3>
+                    <p>Your Score: ${score}/${questions.length} (${percentage}%)</p>
+                    <p>${percentage >= 80 ? 'Excellent work! 🌟' : percentage >= 60 ? 'Good job! 👍' : 'Keep learning! 📚'}</p>
+                </div>
+            `;
+
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('restart-btn').style.display = 'inline-block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            loadQuestion();
+            document.getElementById('score').textContent = '0';
+            document.getElementById('total').textContent = '0';
+            document.getElementById('restart-btn').style.display = 'none';
+        }
+
+        // Load first question
+        loadQuestion();
+    </script>
+</body>
+</html>

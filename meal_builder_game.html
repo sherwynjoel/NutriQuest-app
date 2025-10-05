@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriQuest - Meal Builder Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+        h1 {
+            color: #2E7D32;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .ingredients-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        .meal-plate {
+            background: #fff;
+            border: 3px solid #e0e0e0;
+            border-radius: 50%;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .meal-plate.has-items {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        .ingredient-category {
+            margin-bottom: 25px;
+        }
+        .category-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: #E8F5E8;
+            border-radius: 8px;
+        }
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        .ingredient-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ingredient-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .ingredient-item.selected {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        .ingredient-emoji {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        .ingredient-name {
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #333;
+        }
+        .meal-items {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 20px;
+        }
+        .meal-item {
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 5px 8px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .remove-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-panel {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1976D2;
+            margin: 10px 0;
+        }
+        .nutrition-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .nutrition-item {
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .nutrition-value {
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        .btn-secondary {
+            background: #757575;
+        }
+        .btn-secondary:hover {
+            background: #666;
+        }
+        .result {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .result.excellent {
+            background: #E8F5E8;
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+        }
+        .result.good {
+            background: #FFF3E0;
+            color: #F57C00;
+            border: 2px solid #FF9800;
+        }
+        .result.needs-work {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+        .back-btn {
+            background: #757575;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #666;
+        }
+        .instructions {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #1976D2;
+            margin-top: 0;
+        }
+        .empty-plate {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="history.back()">← Back to Games</button>
+        
+        <div class="header">
+            <div class="logo">🍽️</div>
+            <h1>Meal Builder Game</h1>
+            <p class="subtitle">Create balanced meals and earn points for healthy choices!</p>
+        </div>
+
+        <div class="instructions">
+            <h3>🎯 How to Play:</h3>
+            <p>• Click ingredients to add them to your meal plate</p>
+            <p>• Create balanced meals with proteins, vegetables, grains, and fruits</p>
+            <p>• Get bonus points for balanced nutrition and healthy choices</p>
+            <p>• Click the ❌ on meal items to remove them</p>
+        </div>
+
+        <div class="score-panel">
+            <div class="score">Score: <span id="score">0</span> points</div>
+            <div class="nutrition-info">
+                <div class="nutrition-item">
+                    <div>Proteins</div>
+                    <div class="nutrition-value" id="protein-count">0</div>
+                </div>
+                <div class="nutrition-item">
+                    <div>Vegetables</div>
+                    <div class="nutrition-value" id="vegetable-count">0</div>
+                </div>
+                <div class="nutrition-item">
+                    <div>Grains</div>
+                    <div class="nutrition-value" id="grain-count">0</div>
+                </div>
+                <div class="nutrition-item">
+                    <div>Fruits</div>
+                    <div class="nutrition-value" id="fruit-count">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-layout">
+            <div class="ingredients-panel">
+                <div class="ingredient-category">
+                    <div class="category-title">🥩 Proteins</div>
+                    <div class="ingredients-grid" id="proteins"></div>
+                </div>
+                
+                <div class="ingredient-category">
+                    <div class="category-title">🥬 Vegetables</div>
+                    <div class="ingredients-grid" id="vegetables"></div>
+                </div>
+                
+                <div class="ingredient-category">
+                    <div class="category-title">🌾 Grains</div>
+                    <div class="ingredients-grid" id="grains"></div>
+                </div>
+                
+                <div class="ingredient-category">
+                    <div class="category-title">🍎 Fruits</div>
+                    <div class="ingredients-grid" id="fruits"></div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="meal-plate" id="meal-plate">
+                    <div class="meal-items" id="meal-items">
+                        <div class="empty-plate">Click ingredients to build your meal</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="result" class="result" style="display: none;"></div>
+
+        <div class="controls">
+            <button class="btn" onclick="calculateScore()" id="calculate-btn">Calculate Score</button>
+            <button class="btn btn-secondary" onclick="clearMeal()" id="clear-btn">Clear Meal</button>
+            <button class="btn btn-secondary" onclick="resetGame()" id="reset-btn">New Meal</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let mealItems = [];
+        let selectedIngredients = new Set();
+
+        const ingredients = {
+            proteins: [
+                { name: "Chicken", emoji: "🐔", points: 10, health: 8 },
+                { name: "Salmon", emoji: "🐟", points: 12, health: 9 },
+                { name: "Beef", emoji: "🥩", points: 8, health: 6 },
+                { name: "Tofu", emoji: "🧀", points: 10, health: 8 },
+                { name: "Eggs", emoji: "🥚", points: 9, health: 7 },
+                { name: "Turkey", emoji: "🦃", points: 11, health: 8 }
+            ],
+            vegetables: [
+                { name: "Broccoli", emoji: "🥦", points: 8, health: 9 },
+                { name: "Carrots", emoji: "🥕", points: 7, health: 8 },
+                { name: "Spinach", emoji: "🥬", points: 9, health: 9 },
+                { name: "Bell Pepper", emoji: "🫑", points: 6, health: 8 },
+                { name: "Tomato", emoji: "🍅", points: 5, health: 7 },
+                { name: "Cucumber", emoji: "🥒", points: 4, health: 8 }
+            ],
+            grains: [
+                { name: "Brown Rice", emoji: "🍚", points: 6, health: 8 },
+                { name: "Quinoa", emoji: "🌾", points: 8, health: 9 },
+                { name: "Oats", emoji: "🌾", points: 7, health: 8 },
+                { name: "Whole Wheat", emoji: "🍞", points: 5, health: 7 },
+                { name: "Barley", emoji: "🌾", points: 6, health: 8 }
+            ],
+            fruits: [
+                { name: "Apple", emoji: "🍎", points: 5, health: 8 },
+                { name: "Banana", emoji: "🍌", points: 4, health: 7 },
+                { name: "Orange", emoji: "🍊", points: 5, health: 8 },
+                { name: "Berries", emoji: "🫐", points: 7, health: 9 },
+                { name: "Avocado", emoji: "🥑", points: 8, health: 8 }
+            ]
+        };
+
+        function initGame() {
+            // Clear previous state
+            mealItems = [];
+            selectedIngredients.clear();
+            
+            // Create ingredient buttons
+            Object.keys(ingredients).forEach(category => {
+                const container = document.getElementById(category);
+                container.innerHTML = '';
+                
+                ingredients[category].forEach((ingredient, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'ingredient-item';
+                    item.dataset.category = category;
+                    item.dataset.index = index;
+                    item.innerHTML = `
+                        <div class="ingredient-emoji">${ingredient.emoji}</div>
+                        <div class="ingredient-name">${ingredient.name}</div>
+                    `;
+                    item.addEventListener('click', () => addIngredient(category, index));
+                    container.appendChild(item);
+                });
+            });
+            
+            updateMealDisplay();
+            updateNutritionCounts();
+        }
+
+        function addIngredient(category, index) {
+            const ingredient = ingredients[category][index];
+            const key = `${category}-${index}`;
+            
+            if (selectedIngredients.has(key)) {
+                // Remove ingredient
+                selectedIngredients.delete(key);
+                mealItems = mealItems.filter(item => item.key !== key);
+            } else {
+                // Add ingredient
+                selectedIngredients.add(key);
+                mealItems.push({
+                    key: key,
+                    name: ingredient.name,
+                    emoji: ingredient.emoji,
+                    category: category,
+                    points: ingredient.points,
+                    health: ingredient.health
+                });
+            }
+            
+            updateMealDisplay();
+            updateNutritionCounts();
+        }
+
+        function updateMealDisplay() {
+            const mealItemsContainer = document.getElementById('meal-items');
+            const mealPlate = document.getElementById('meal-plate');
+            
+            if (mealItems.length === 0) {
+                mealItemsContainer.innerHTML = '<div class="empty-plate">Click ingredients to build your meal</div>';
+                mealPlate.classList.remove('has-items');
+            } else {
+                mealItemsContainer.innerHTML = mealItems.map(item => `
+                    <div class="meal-item">
+                        <span>${item.emoji} ${item.name}</span>
+                        <button class="remove-btn" onclick="removeIngredient('${item.key}')">❌</button>
+                    </div>
+                `).join('');
+                mealPlate.classList.add('has-items');
+            }
+        }
+
+        function removeIngredient(key) {
+            selectedIngredients.delete(key);
+            mealItems = mealItems.filter(item => item.key !== key);
+            updateMealDisplay();
+            updateNutritionCounts();
+        }
+
+        function updateNutritionCounts() {
+            const counts = { proteins: 0, vegetables: 0, grains: 0, fruits: 0 };
+            
+            mealItems.forEach(item => {
+                counts[item.category]++;
+            });
+            
+            Object.keys(counts).forEach(category => {
+                document.getElementById(`${category}-count`).textContent = counts[category];
+            });
+        }
+
+        function calculateScore() {
+            if (mealItems.length === 0) {
+                showResult('Please add some ingredients to your meal first!', 'needs-work');
+                return;
+            }
+            
+            let totalScore = 0;
+            let healthScore = 0;
+            const counts = { proteins: 0, vegetables: 0, grains: 0, fruits: 0 };
+            
+            // Calculate base scores
+            mealItems.forEach(item => {
+                totalScore += item.points;
+                healthScore += item.health;
+                counts[item.category]++;
+            });
+            
+            // Balance bonus (reward for having multiple food groups)
+            const foodGroups = Object.values(counts).filter(count => count > 0).length;
+            const balanceBonus = foodGroups * 5;
+            
+            // Variety bonus (reward for having multiple items in each group)
+            const varietyBonus = Object.values(counts).reduce((sum, count) => sum + Math.min(count, 3) * 2, 0);
+            
+            // Health bonus
+            const healthBonus = Math.floor(healthScore / mealItems.length) * 2;
+            
+            const finalScore = totalScore + balanceBonus + varietyBonus + healthBonus;
+            
+            // Update score display
+            document.getElementById('score').textContent = finalScore;
+            
+            // Show result
+            let resultType = 'needs-work';
+            let message = '';
+            
+            if (foodGroups >= 4 && finalScore >= 50) {
+                resultType = 'excellent';
+                message = `🏆 Excellent! Perfectly balanced meal! Score: ${finalScore}`;
+            } else if (foodGroups >= 3 && finalScore >= 30) {
+                resultType = 'good';
+                message = `👍 Good job! Well-balanced meal! Score: ${finalScore}`;
+            } else {
+                resultType = 'needs-work';
+                message = `📚 Keep learning! Try adding more food groups. Score: ${finalScore}`;
+            }
+            
+            showResult(message, resultType);
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = message;
+        }
+
+        function clearMeal() {
+            mealItems = [];
+            selectedIngredients.clear();
+            updateMealDisplay();
+            updateNutritionCounts();
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function resetGame() {
+            clearMeal();
+            score = 0;
+            document.getElementById('score').textContent = '0';
+        }
+
+        // Initialize game when page loads
+        initGame();
+    </script>
+</body>
+</html>

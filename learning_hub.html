@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriQuest - Learning Hub</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+        h1 {
+            color: #2E7D32;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .learning-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .learning-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .learning-card:hover {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .learning-card.active {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-right: 15px;
+        }
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .card-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .card-content {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .card-content.active {
+            display: block;
+        }
+        .fact-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .fact-title {
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 8px;
+        }
+        .fact-text {
+            color: #555;
+            line-height: 1.4;
+        }
+        .tip-box {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tip-title {
+            color: #1976D2;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .food-pyramid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .pyramid-level {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+        .pyramid-level.foundation {
+            background: #E8F5E8;
+            border-color: #4CAF50;
+        }
+        .pyramid-level.moderate {
+            background: #FFF3E0;
+            border-color: #FF9800;
+        }
+        .pyramid-level.small {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        .level-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .level-foods {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .quiz-section {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .quiz-question {
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 15px;
+        }
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+        .quiz-option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quiz-option:hover {
+            border-color: #4CAF50;
+            background: #f8f9fa;
+        }
+        .quiz-option.selected {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        .quiz-option.correct {
+            border-color: #4CAF50;
+            background: #C8E6C9;
+        }
+        .quiz-option.incorrect {
+            border-color: #f44336;
+            background: #ffcdd2;
+        }
+        .back-btn {
+            background: #757575;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #666;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .achievement {
+            background: #FFF3E0;
+            border: 2px solid #FF9800;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .achievement-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        .achievement-text {
+            flex: 1;
+        }
+        .achievement-title {
+            font-weight: bold;
+            color: #F57C00;
+            margin-bottom: 5px;
+        }
+        .achievement-desc {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="history.back()">← Back to Games</button>
+        
+        <div class="header">
+            <div class="logo">📚</div>
+            <h1>Learning Hub</h1>
+            <p class="subtitle">Discover nutrition facts and learn about healthy eating!</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <strong>Learning Progress: <span id="progress-text">0%</span></strong>
+        </div>
+
+        <div class="learning-sections">
+            <!-- Nutrition Basics -->
+            <div class="learning-card" onclick="toggleCard(this)">
+                <div class="card-header">
+                    <div class="card-icon">🥗</div>
+                    <div class="card-title">Nutrition Basics</div>
+                </div>
+                <div class="card-description">Learn the fundamentals of nutrition and healthy eating</div>
+                <div class="card-content">
+                    <div class="fact-item">
+                        <div class="fact-title">🍎 What is Nutrition?</div>
+                        <div class="fact-text">Nutrition is the process by which our bodies use food for energy, growth, and health. Good nutrition means eating a variety of foods that provide the nutrients your body needs.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">⚡ Macronutrients</div>
+                        <div class="fact-text">The three main nutrients your body needs in large amounts: Carbohydrates (energy), Proteins (building blocks), and Fats (energy storage and cell function).</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">💎 Micronutrients</div>
+                        <div class="fact-text">Vitamins and minerals your body needs in smaller amounts but are essential for health, growth, and disease prevention.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Groups -->
+            <div class="learning-card" onclick="toggleCard(this)">
+                <div class="card-header">
+                    <div class="card-icon">🌾</div>
+                    <div class="card-title">Food Groups</div>
+                </div>
+                <div class="card-description">Understand the different food groups and their benefits</div>
+                <div class="card-content">
+                    <div class="food-pyramid">
+                        <div class="pyramid-level foundation">
+                            <div class="level-title">🥬 Vegetables</div>
+                            <div class="level-foods">Broccoli, Carrots, Spinach</div>
+                        </div>
+                        <div class="pyramid-level foundation">
+                            <div class="level-title">🍎 Fruits</div>
+                            <div class="level-foods">Apples, Bananas, Oranges</div>
+                        </div>
+                        <div class="pyramid-level foundation">
+                            <div class="level-title">🌾 Grains</div>
+                            <div class="level-foods">Rice, Bread, Oats</div>
+                        </div>
+                        <div class="pyramid-level moderate">
+                            <div class="level-title">🥩 Proteins</div>
+                            <div class="level-foods">Chicken, Fish, Beans</div>
+                        </div>
+                        <div class="pyramid-level moderate">
+                            <div class="level-title">🥛 Dairy</div>
+                            <div class="level-foods">Milk, Cheese, Yogurt</div>
+                        </div>
+                        <div class="pyramid-level small">
+                            <div class="level-title">🍭 Treats</div>
+                            <div class="level-foods">Candy, Cookies (Small amounts)</div>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <div class="tip-title">💡 Tip</div>
+                        <div>Fill half your plate with vegetables and fruits, one quarter with grains, and one quarter with protein!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthy Habits -->
+            <div class="learning-card" onclick="toggleCard(this)">
+                <div class="card-header">
+                    <div class="card-icon">💪</div>
+                    <div class="card-title">Healthy Habits</div>
+                </div>
+                <div class="card-description">Build lifelong healthy eating habits</div>
+                <div class="card-content">
+                    <div class="fact-item">
+                        <div class="fact-title">💧 Stay Hydrated</div>
+                        <div class="fact-text">Drink 6-8 glasses of water daily. Water helps your body function properly and keeps you energized.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">⏰ Regular Meals</div>
+                        <div class="fact-text">Eat breakfast, lunch, and dinner at regular times. This helps maintain stable energy levels throughout the day.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">🍽️ Portion Control</div>
+                        <div class="fact-text">Use your hand as a guide: palm for protein, fist for vegetables, cupped hand for grains, thumb for fats.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">🧘 Mindful Eating</div>
+                        <div class="fact-text">Eat slowly, chew well, and pay attention to your hunger and fullness cues.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vitamins & Minerals -->
+            <div class="learning-card" onclick="toggleCard(this)">
+                <div class="card-header">
+                    <div class="card-icon">💊</div>
+                    <div class="card-title">Vitamins & Minerals</div>
+                </div>
+                <div class="card-description">Learn about essential vitamins and minerals</div>
+                <div class="card-content">
+                    <div class="fact-item">
+                        <div class="fact-title">🥕 Vitamin A</div>
+                        <div class="fact-text">Found in carrots, sweet potatoes, and spinach. Helps with vision and immune system.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">🍊 Vitamin C</div>
+                        <div class="fact-text">Found in oranges, strawberries, and broccoli. Helps heal wounds and keeps teeth and gums healthy.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">🥛 Calcium</div>
+                        <div class="fact-text">Found in milk, cheese, and leafy greens. Builds strong bones and teeth.</div>
+                    </div>
+                    <div class="fact-item">
+                        <div class="fact-title">🥩 Iron</div>
+                        <div class="fact-text">Found in meat, beans, and spinach. Helps carry oxygen through your body.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Quiz -->
+            <div class="learning-card" onclick="toggleCard(this)">
+                <div class="card-header">
+                    <div class="card-icon">🧠</div>
+                    <div class="card-title">Knowledge Quiz</div>
+                </div>
+                <div class="card-description">Test your nutrition knowledge</div>
+                <div class="card-content">
+                    <div class="quiz-section">
+                        <div class="quiz-question">Which food group should make up the largest part of your plate?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectAnswer(this, 'vegetables')">A) Vegetables</div>
+                            <div class="quiz-option" onclick="selectAnswer(this, 'meat')">B) Meat</div>
+                            <div class="quiz-option" onclick="selectAnswer(this, 'grains')">C) Grains</div>
+                            <div class="quiz-option" onclick="selectAnswer(this, 'dairy')">D) Dairy</div>
+                        </div>
+                        <div id="quiz-result" style="margin-top: 15px; font-weight: bold;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="learning-card" onclick="toggleCard(this)">
+                <div class="card-header">
+                    <div class="card-icon">🏆</div>
+                    <div class="card-title">Achievements</div>
+                </div>
+                <div class="card-description">Track your learning progress</div>
+                <div class="card-content">
+                    <div class="achievement">
+                        <div class="achievement-icon">🥗</div>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Nutrition Explorer</div>
+                            <div class="achievement-desc">Learned about nutrition basics</div>
+                        </div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">🌾</div>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Food Group Master</div>
+                            <div class="achievement-desc">Understood all food groups</div>
+                        </div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">💪</div>
+                        <div class="achievement-text">
+                            <div class="achievement-title">Healthy Habits Hero</div>
+                            <div class="achievement-desc">Built healthy eating habits</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let progress = 0;
+        let selectedAnswer = null;
+
+        function toggleCard(card) {
+            const content = card.querySelector('.card-content');
+            const isActive = card.classList.contains('active');
+            
+            // Close all other cards
+            document.querySelectorAll('.learning-card').forEach(c => {
+                c.classList.remove('active');
+                c.querySelector('.card-content').classList.remove('active');
+            });
+            
+            // Toggle current card
+            if (!isActive) {
+                card.classList.add('active');
+                content.classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const activeCards = document.querySelectorAll('.learning-card.active').length;
+            const totalCards = document.querySelectorAll('.learning-card').length;
+            progress = Math.round((activeCards / totalCards) * 100);
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = progress + '%';
+        }
+
+        function selectAnswer(option, answer) {
+            // Remove previous selection
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            option.classList.add('selected');
+            selectedAnswer = answer;
+            
+            // Check answer after a short delay
+            setTimeout(() => {
+                checkAnswer(option, answer);
+            }, 500);
+        }
+
+        function checkAnswer(option, answer) {
+            const resultDiv = document.getElementById('quiz-result');
+            
+            // Remove previous classes
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            if (answer === 'vegetables') {
+                option.classList.add('correct');
+                resultDiv.innerHTML = '✅ Correct! Vegetables should fill half your plate for optimal nutrition.';
+                resultDiv.style.color = '#2E7D32';
+            } else {
+                option.classList.add('incorrect');
+                resultDiv.innerHTML = '❌ Not quite! The correct answer is A) Vegetables. They should fill half your plate.';
+                resultDiv.style.color = '#c62828';
+            }
+        }
+
+        // Initialize progress
+        updateProgress();
+    </script>
+</body>
+</html>

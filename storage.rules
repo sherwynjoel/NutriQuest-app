@@ -1,0 +1,54 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Users can read/write their own profile images
+    match /users/{userId}/profile/{fileName} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Users can read/write their own game images
+    match /users/{userId}/games/{fileName} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Public game assets are read-only for authenticated users
+    match /game_assets/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public food images are read-only for authenticated users
+    match /food_images/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public meal images are read-only for authenticated users
+    match /meal_images/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public achievement images are read-only for authenticated users
+    match /achievement_images/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public badge images are read-only for authenticated users
+    match /badge_images/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public animation files are read-only for authenticated users
+    match /animations/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public icon files are read-only for authenticated users
+    match /icons/{fileName} {
+      allow read: if request.auth != null;
+    }
+    
+    // Public font files are read-only for authenticated users
+    match /fonts/{fileName} {
+      allow read: if request.auth != null;
+    }
+  }
+}
