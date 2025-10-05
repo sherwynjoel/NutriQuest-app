@@ -180,10 +180,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Material Design for UI guidelines
 - Open source community for inspiration and resources
 
-## 📞 Support
-
-For support, email support@nutriquest.app or create an issue in the repository.
 
 ---
 
-**Built with ❤️ for the hackathon community**
